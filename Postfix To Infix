@@ -1,0 +1,16 @@
+class Solution {
+  public:
+    string postToInfix(string s) {
+        stack<string> st;
+        for(int i = 0 ; i < s.size() ; i++){
+            if(isalpha(s[i])) st.push(string(1,s[i]));
+            else{
+                string ele1 = st.top(); st.pop();
+                string ele2 = st.top(); st.pop();
+                // revrese ele1 and ele2 in case of postfix
+                st.push('(' + ele2 + s[i] + ele1 + ')');
+            }
+        }
+        return st.top();
+    }
+};
