@@ -1,0 +1,28 @@
+string infixToPrefix(string infix)
+{
+    // Reverse String and replace ( with ) and vice versa
+    // Get Postfix
+    // Reverse Postfix
+    int l = infix.size();
+ 
+    // Reverse infix
+    reverse(infix.begin(), infix.end());
+ 
+    // Replace ( with ) and vice versa
+    for (int i = 0; i < l; i++) {
+ 
+        if (infix[i] == '(') {
+            infix[i] = ')';
+        }
+        else if (infix[i] == ')') {
+            infix[i] = '(';
+        }
+    }
+ 
+    string prefix = infixToPostfix(infix);
+ 
+    // Reverse postfix
+    reverse(prefix.begin(), prefix.end());
+ 
+    return prefix;
+}
