@@ -1,25 +1,12 @@
-//User function Template for C++
+void MyQueue :: push(int x){
+    if(rear == 100005) return ;
+    arr[rear++] = x;
+}
 
-class Queue {
-    public:
-    stack<int> s1;
-    stack<int> s2;
-
-    void enqueue(int x) {
-        while(!s1.empty()){
-            s2.push(s1.top());
-            s1.pop();
-        }
-        s1.push(x);
-        while(!s2.empty()){
-            s1.push(s2.top());
-            s2.pop();
-        }
-    }
-
-    int dequeue() {
-        int pooped = s1.top();
-        s1.pop();
-        return pooped;
-    }
-};
+//Function to pop an element from queue and return that element.
+int MyQueue :: pop(){
+    if(front == rear) return -1;
+    int temp = arr[front];
+    front++;
+    return temp;
+}
