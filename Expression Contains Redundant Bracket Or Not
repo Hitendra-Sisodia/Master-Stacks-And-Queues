@@ -1,0 +1,35 @@
+// Method - 1
+class Solution {
+public:
+    bool isOperator(char ch){
+        if(ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+            return true;
+        }
+        return false;
+    }
+    int checkRedundancy(string str) {
+        stack<int> st;
+        for(int i = 0 ; i < str.size() ; i++) {
+            if(str[i] == '(' || isOperator(str[i])){
+                st.push(str[i]);
+            }
+            else{ 
+                if( str[i] == ')' ){
+                    bool isRedundant = true;
+                    // when there is closing bracket then check there exist operator before opening bracket ie. ( + )
+                    while( st.top() != '(' ) {
+                        int top = st.top();
+                        if( isOperator(st.top()) ){
+                            isRedundant = false;
+                        }
+                        st.pop();
+                    }
+                    if(isRedundant == true) return true;
+                    // ")" bracket itself in non popped
+                    st.pop();
+                }   
+            }
+        }
+        return false;
+    }
+};
