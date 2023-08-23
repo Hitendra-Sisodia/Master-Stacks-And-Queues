@@ -1,0 +1,19 @@
+// Method - 1
+class Solution{
+public:
+    void recursiveInsertAtBottom(stack<int> &st, int x){
+        if(st.empty()) {
+            st.push(x);
+            return ;
+        }
+        // pop out element from stack in each recursive call
+        int backEle = st.top();
+        st.pop();
+        recursiveInsertAtBottom(st, x);
+        st.push(backEle);
+    }
+    stack<int> insertAtBottom(stack<int> st,int X){
+        recursiveInsertAtBottom(st, X);
+        return st;
+    }
+};
