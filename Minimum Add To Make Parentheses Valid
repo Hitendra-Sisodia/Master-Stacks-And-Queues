@@ -1,0 +1,29 @@
+// Method - 1 Optimal Using Stack
+class Solution {
+public:
+    // Method - 1 Optimal Using Stack
+    int minAddToMakeValid(string str) {
+        stack<int> st;
+        int count = 0;   // stores the count of braces nned to add
+        for(int i = 0 ; i < str.size() ; i++){
+            if(str[i] == '('){
+                st.push(str[i]);
+            }
+            else {
+                // incoming element is ) closing braces then pop ( opening braces
+                if(!st.empty() && st.top() == '('){
+                    st.pop();
+                }
+                else{
+                    st.push(str[i]);
+                }
+            }
+        }
+        // once valid braces are removed that check count remaining braces as same no of opposite braces are required to make string valid
+        while(!st.empty()) {
+            if(st.top() == '(' || st.top() == ')') count++;
+            st.pop();
+        }
+        return count;
+    }
+};
