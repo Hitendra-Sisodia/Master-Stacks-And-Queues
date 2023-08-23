@@ -1,0 +1,83 @@
+// Method - 2 Using stack TC: O(N), SC : O(N)
+class Solution {
+public:
+    // Method - 2 Using stack TC: O(N), SC : O(N)
+    string findRemoveKDigits(string arr , int k) {
+         // k is 0 , no need of removing /  preforming any operation
+         if(k == 0) return arr;
+        // number of operation greater than length we return an empty string
+        if(k >= arr.size()) return "0";
+        stack<char> st;
+
+        for(int i=0 ; i < arr.size() ; i++){
+            // if k greater than 0 and our stack is not empty and the upcoming digit,
+            // is less than the current top than we will pop the stack top
+            while(!st.empty() && k > 0 && st.top() > arr[i]){
+                st.pop();
+                k--;
+            }
+            if(st.empty() && arr[i] == '0') continue;
+            st.push(arr[i]);
+        }
+        // if all elements are in increasing order then pop last digits
+        while(k != 0 && !st.empty()){
+            st.pop();
+            k--;    
+        }
+        // if stack becames empty while removing elements and removing leading zeros than reutrn 0
+        if(st.empty()) return "0";
+        string ans = "";
+        while(!st.empty()) {
+            ans.push_back(st.top());
+            st.pop();
+        }
+        reverse(ans.begin(),ans.end());
+        return ans;
+    }
+    string removeKdigits(string num, int k) {
+        return findRemoveKDigits(num , k);
+    }
+};
+
+
+
+
+
+
+
+// Method - 3 Using arr single traversal TC: O(N), SC : O(1)
+class Solution {
+public:
+    // Method - 3 Using arr single traversal TC: O(N), SC : O(1)
+    string findRemoveKDigits(string arr , int k) {
+        if(k == 0) return arr;
+        if(k >= arr.size()) return "0";
+        int digits = arr.size() - k;
+        string ans = "";
+        int start = 0;
+        int top = -1;
+        for(int i = 0 ; i < arr.size() ; i++){
+            while(k > 0 && top >= 0 && arr[top] > arr[i]) {
+                top--;
+                k--;
+            }
+            top++;
+            arr[top] = arr[i];
+        }
+        while(arr[start] == '0') {
+            cout<<start<<" ";
+            start++;
+        }
+        for(int i = 0 ; i < arr.size() ; i++){
+            cout<<arr[i]<<" ";
+        }
+        for(int i = start ; i < digits ; i++) {
+            ans += arr[i];
+        }
+        if(ans == "") return "0";
+        return ans;
+    }
+    string removeKdigits(string num, int k) {
+        return findRemoveKDigits(num , k);
+    }
+};
