@@ -1,0 +1,87 @@
+// Method - 1 Brute Force TC: O(N * K)   SC: O(1)
+class Solution {
+public:
+    // Method - 1 Brute Force TC: O(N * K)   SC: O(1)
+    vector<int> findMaxSlidingWindow(vector<int> &arr, int k) {
+        vector<int> ans;
+        for(int i = 0 ; i <= arr.size() - k ; i++) {  // Outer loop will run N - K times
+            int maxi = arr[i];
+            for(int j = i ; j <= (i+k-1) ; j++){   // Inner loop will run K times
+                maxi = max(maxi, arr[j]);
+            }
+            // push the max of subarray in answer vector
+            ans.push_back(maxi);
+        }
+        return ans;
+    }
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        return findMaxSlidingWindow(nums , k);
+    }
+};
+
+
+
+
+
+// Method - 2 Improved TC: O(N} + O(N): ----> O(N)   SC: O(N)
+class Solution {
+public:
+    // Method - 2 Brute Force TC: O(N} + O(N): ----> O(N)   SC: O(N)
+    vector<int> findMaxSlidingWindow(vector<int> &arr, int k) {
+        vector<int> ans;
+        deque<int> dq;
+        for(int i = 0 ; i < arr.size() ; i++) {
+            // check for sliding window out of bound condition from observation and dry run
+            if(!dq.empty() && dq.front() == i - k) {
+                dq.pop_front();
+            }
+            // deque top will always stores maximum incoming values if dq.top <= arr[i] then pop dq.top/back
+            // as deque only contain's maximum values 
+            while(!dq.empty() && arr[dq.back()] < arr[i]){
+                dq.pop_back();
+            }
+            // push incoming elements index after removing smaller element index from deque
+            dq.push_back(i);
+            // ans start's when i became greater than k-1 i.e  for k=3 [0,1,2] // we have to find max among 0,1,2 index
+            if(i >= k-1) {
+                ans.push_back(arr[dq.front()]);
+            }
+        }
+        return ans;
+    }
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        return findMaxSlidingWindow(nums , k);
+    }
+};
+
+
+
+
+
+// Mehod - 3 Using Deque + two pointer approach Optimal TC: O(N)  SC: O (K)
+class Solution {
+public:
+    // Mehod - 3 Using Deque + two pointer approach Optimal TC: O(N)  SC: O (K)
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        vector<int>v;
+        deque<int>q;
+        int i=0;
+        int j=0;
+        while(j<nums.size()){
+            while(q.size()>0&&q.back()<nums[j]){
+                q.pop_back();
+            }
+            q.push_back(nums[j]);
+            if(j-i+1==k){
+                v.push_back(q.front());
+                if(q.front()==nums[i]){
+                    q.pop_front();
+                }
+                i++;
+            }
+            j++;
+        }
+        return v;
+    }
+};
+
