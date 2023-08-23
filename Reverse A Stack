@@ -1,0 +1,31 @@
+class Solution{
+public:
+    void insertAtBottom(stack<int> &st, int x){
+        // base case
+        if(st.empty()){
+            st.push(x);
+            return ;
+        }
+        int backUpElements = st.top();
+        st.pop();
+        
+        // recursive call to insert element at bottom of the stack
+        insertAtBottom(st,x);
+        
+        st.push(backUpElements);
+    }
+    void Reverse(stack<int> &st){
+        // base case
+        if(st.empty()){
+            return  ;
+        }
+        int backEle = st.top();
+        st.pop();
+        
+        // recursive call
+        Reverse(st);
+        
+        // once we get reverse stack insert element at the bottom of the stack
+        insertAtBottom(st, backEle);
+    }
+};
