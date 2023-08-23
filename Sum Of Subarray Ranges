@@ -1,0 +1,128 @@
+// Method - 1 Brute Force TC: O(N^2) SC : O(1)
+class Solution {
+public:
+    // Method - 1 Brute Force TC: O(N^2) SC : O(1)
+    long long findSubArrayRanges(vector<int> &arr) {
+        long long sum = 0;
+        for(int i = 0 ; i < arr.size() ; i++) {
+            int maxi = arr[i];
+            int mini = arr[i];
+            for(int j = i + 1; j < arr.size() ; j++) {
+                maxi = max(maxi,arr[j]);
+                mini = min(mini, arr[j]);
+                sum += (maxi - mini);
+            }
+        }
+        return sum;
+    }
+    long long subArrayRanges(vector<int>& nums) {
+        return findSubArrayRanges(nums);
+    }
+};
+
+
+
+
+
+
+// Method - 2 Optmial TC: O(N) SC : O(1)
+Method - 2 Optimal Using Sum of subarray min + stock span approach
+class Solution {
+public:
+    // Method - 2 Optmial TC: O(N) SC : O(1)
+    vector<int> findLeftCountMinimum(vector<int> &arr) {
+        int n = arr.size();
+        stack<int> st;
+        vector<int> leftCount(n);
+        // There are two methods to count maximum/minimum values in left and right
+        // A) Using index    B) Using count variable
+        for(int i = 0 ; i < n ; i++){
+            while(!st.empty() && arr[st.top()] >= arr[i]){
+                st.pop();
+            }
+            leftCount[i] = st.empty() ? i+1 : i - st.top();
+            st.push(i);
+        }
+        return leftCount;
+    }
+    vector<int> findRightCountMinimum(vector<int> &arr) {
+        int n = arr.size();
+        stack<int> st;
+        vector<int> RightCount(n);
+        for(int i = n-1 ; i >= 0 ; i--){
+            while(!st.empty() && arr[st.top()] > arr[i]){
+                st.pop();
+            }
+            RightCount[i] = st.empty() ? n - i : st.top() - i;
+            st.push(i);
+        }
+        return RightCount;
+    }
+    long long findSumSubArrayMinimum(vector<int> &arr) {
+        // 1. create left array that stores count of maximum value in left
+        vector<int> leftCount = findLeftCountMinimum(arr);
+        // 2. create right array that stores count of maximum value in right
+        vector<int> rightCount = findRightCountMinimum(arr);
+
+        long long sumMinimum = 0;
+        for(int i = 0 ; i < arr.size() ; i++){
+            sumMinimum += (static_cast<long long>(leftCount[i]) * rightCount[i] * arr[i]);
+        }
+        return sumMinimum;
+    }
+    vector<int> findLeftCountMaximum(vector<int> &arr){
+        int n = arr.size();
+        stack<int> st;
+        vector<int> leftCount(n);
+        for(int i = 0 ; i < n ; i++){
+            while(!st.empty() && arr[st.top()] <= arr[i]){
+                st.pop();
+            }
+            leftCount[i] = st.empty() ? i+1 : i - st.top();
+            st.push(i);
+        }
+        return leftCount;
+    }
+    vector<int> findRightCountMaximum(vector<int> &arr) {
+        int n = arr.size();
+        stack<int> st;
+        vector<int> RightCount(n);
+        for(int i = n-1 ; i >= 0 ; i--){
+            while(!st.empty() && arr[st.top()] < arr[i]){
+                st.pop();
+            }
+            RightCount[i] = st.empty() ? n - i : st.top() - i;
+            st.push(i);
+        }
+        return RightCount;
+    }
+    long long findSumSubArrayMaximum(vector<int> &arr) {
+        // 1. create left array that stores count of minimum value while reaching maximum value including itself
+        vector<int> leftCount = findLeftCountMaximum(arr);
+        // 2. create right array that stores count of minimum value in right
+        vector<int> rightCount = findRightCountMaximum(arr);
+
+        long long sumMaximum = 0;
+        for(int i = 0 ; i < arr.size() ; i++){
+            sumMaximum += (static_cast<long long>(leftCount[i]) * rightCount[i] * arr[i]);
+        }
+        return sumMaximum;
+    }
+
+    long long findSubArrayRanges(vector<int> &arr) {
+        // 1. find sum of subarray minimum
+        long long sumSubArrayMinimum = findSumSubArrayMinimum(arr);
+
+        // 2. find sum of subarray maximum
+        long long sumSubArrayMaximum = findSumSubArrayMaximum(arr);
+
+        // 3. subtract (maxium - minimum)
+        long long ans = sumSubArrayMaximum - sumSubArrayMinimum;
+        
+        // 4. return ans
+        return ans;
+    }
+    long long subArrayRanges(vector<int>& nums) {
+        return findSubArrayRanges(nums);
+    }
+};
