@@ -1,0 +1,61 @@
+// Method - 1 Optimal using stack
+class Solution {
+public:
+    // Method - 1 Optimal using stack
+    vector<int> nextSmallerElementLeft(vector<int> &arr) {
+        int n = arr.size();
+        vector<int> ans(n);
+        stack<int> st;
+        for(int i = 0 ; i < n ; i++){
+            while(!st.empty() && arr[st.top()] >= arr[i]){
+                st.pop();
+            }
+            ans[i] = st.empty() ? -1 : st.top();
+            st.push(i);
+        }
+        return ans;
+    }
+    vector<int> nextSmallerElementRight(vector<int> &arr) {
+        int n = arr.size();
+        vector<int> ans(n);
+        stack<int> st;
+        for(int i = n-1 ; i >= 0 ; i--) {
+            while(!st.empty() && arr[st.top()] >= arr[i]){
+                st.pop();
+            }
+            ans[i] = st.empty() ? n : st.top();
+            st.push(i);
+        }
+        return ans;
+    }
+    int findLargestAreaHistogram(vector<int> &arr) {
+        vector<int> left = nextSmallerElementLeft(arr);
+        vector<int> right = nextSmallerElementRight(arr);
+
+        int maxAreaHistogram = INT_MIN;
+        for(int i = 0 ; i < arr.size() ; i++) {
+            int height = arr[i];
+            int width = (right[i] - left[i] - 1);
+            
+            maxAreaHistogram = max(maxAreaHistogram , (height < width) ? height * height : width * width);
+        }
+        return maxAreaHistogram;
+    }
+    int findMaximalSquare(vector<vector<char>>& matrix ) {
+        int rows = matrix.size();
+        int cols = matrix[0].size();
+
+        vector<int> v(cols);
+        int maxArea = INT_MIN;
+        for(int i = 0 ; i < rows ; i++){
+            for(int j = 0 ; j < cols ; j++){
+                v[j] =  matrix[i][j] == '1' ?  v[j] += 1 : 0;
+            }
+            maxArea = max(maxArea, findLargestAreaHistogram(v));
+        }
+        return maxArea;
+    }
+    int maximalSquare(vector<vector<char>>& matrix) {
+        return findMaximalSquare(matrix);
+    }
+};
