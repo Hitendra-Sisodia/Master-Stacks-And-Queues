@@ -1,0 +1,77 @@
+// Method - 1
+class Node {
+public:
+    Node *prev;
+    Node *next;
+    int key;
+    int val;
+    Node(int key , int val) {
+        tie(this->key, this->val) = make_tuple(key, val);
+        prev = next = NULL;
+    }
+};
+
+class LRUCache {
+public:
+    Node *head = new Node(-1,-1);
+    Node *tail = new Node(-1,-1);
+    unordered_map<int, Node*> map;
+    int cap = 0;
+    int size = 0;
+    LRUCache(int capacity) {
+        cap = capacity;
+        head -> next = tail;
+        tail -> next = head;
+    }
+    // adding new node at head of linked list
+    void addNode(Node *target) {
+        //  t---->   
+        target -> next = head -> next;
+        // <-----t
+        target -> prev = head;
+        // t <-----1stnode
+        head -> next -> prev = target;
+        // h ----> target
+        head -> next = target;
+        size++;
+        // something to add
+    }
+    void deleteNode(Node *target) {
+        target -> prev -> next = target -> next;
+        target -> next -> prev = target -> prev;
+        size--; 
+    }
+    int get(int key) {
+        // if key not found
+        if(map.find(key) == map.end()) return -1;
+
+        // if key found then delete that key -> node from that position and insert at head
+        Node *target = map[key];
+        int ans = target -> val;
+        deleteNode(target);
+        addNode(target);
+        return ans;
+    }
+    void put(int key, int value) {
+        // if map contains that key remove that node and insert new node with key and new value
+        if(map.find(key) != map.end()) {
+            // delete that existing node
+            deleteNode(map[key]);
+            // create new Node and insert using addNode utility functions
+            addNode(new Node(key, value));
+            // update entry in hash map for updated key
+            map[key] = head -> next;
+            return ;
+        }
+        if(size == cap) {
+            // delete mapping
+            map.erase(tail -> prev -> key);
+            deleteNode(tail -> prev);
+        }
+        
+        // add newNode
+        addNode(new Node(key, value));
+        // update mapping
+        map[key] = head -> next;
+    }
+};
