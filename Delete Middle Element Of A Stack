@@ -1,0 +1,20 @@
+// Method - 1
+class Solution{
+public:
+    void recursiveDeleteMid(stack<int> &st, int size, int count) {
+        if(count == (size/2)){
+            st.pop();
+            return ;
+        }
+        int backupEle = st.top();
+        st.pop();
+        recursiveDeleteMid(st, size , count+1);
+        
+        // backtracking 
+        st.push(backupEle);
+    }
+    void deleteMid(stack<int>&s, int size){
+        int count = 0;
+        recursiveDeleteMid(s,size,count);
+    }
+};
