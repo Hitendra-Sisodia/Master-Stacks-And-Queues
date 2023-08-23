@@ -1,0 +1,81 @@
+// Method  - 1 Optimal - 1 But Not line wise optimized
+class Solution {
+public:
+    // Method  - 1 Optimal But Not code line wise optimized
+    vector<int> leastSmallestElementLeft(vector<int> &arr){
+        int n = arr.size();
+        vector<int> left(n);
+        stack<int> st;
+        for(int i = 0 ; i < n ; i++){
+            while(!st.empty() && arr[st.top()] >= arr[i]){
+                st.pop();
+            }
+            left[i] = st.empty() ? -1 : st.top();
+            st.push(i);
+        }
+        return left;
+    }
+    vector<int> leastSmallestElementRight(vector<int> &arr) {
+        int n = arr.size();
+        vector<int> right(n);
+        stack<int> st;
+        for(int i = n-1 ; i >= 0 ; i--){
+            while(!st.empty() && arr[st.top()] >= arr[i]){
+                st.pop();
+            }
+            right[i] = st.empty() ? n : st.top();
+            st.push(i);
+        }
+        return right;
+    }
+    int findLargestRectangleArea(vector<int> &arr) {
+        vector<int> left = leastSmallestElementLeft(arr);
+        vector<int> right = leastSmallestElementRight(arr);
+        int maxEle = -1;
+        for(int i = 0 ; i < arr.size() ; i++){
+            maxEle = max(maxEle, (right[i] - left[i] - 1) * arr[i]);
+        }
+        return maxEle;
+    }
+    // Method 1 - Optimal code in terms of line
+    int largestRectangleArea(vector<int>& arr) {
+        return findLargestRectangleArea(arr);
+    }
+};
+
+
+
+
+
+
+// Method 1 - Optimal - 2 code in terms of line
+class Solution {
+public:
+    // Method 1 - Optimal code in terms of line
+    int largestRectangleArea(vector<int>& arr) {
+        int n = arr.size();
+        vector<int> left(n);
+        vector<int> right(n);
+        stack<int> st;
+        for(int i = 0 ; i < arr.size() ; i++){
+            while(!st.empty() && arr[st.top()] >= arr[i]){
+                st.pop();
+            }
+            left[i] = st.empty() ? -1 : st.top();
+            st.push(i);
+        }
+        while(!st.empty()) st.pop();
+        for(int i = arr.size() - 1 ; i >= 0 ; i--){
+            while(!st.empty() && arr[st.top()] >= arr[i]){
+                st.pop();
+            }
+            right[i] = st.empty() ? n : st.top();
+            st.push(i);
+        }
+        int maxArea = -1;
+        for(int i = 0 ; i < n ; i++){
+            maxArea = max(maxArea , (right[i] - left[i] - 1) * arr[i]);
+        }
+        return maxArea;
+    }
+};
