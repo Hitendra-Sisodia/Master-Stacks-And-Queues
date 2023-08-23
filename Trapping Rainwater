@@ -1,0 +1,76 @@
+// Method - 1 Brute
+class Solution {
+public:
+    int trap(vector<int>& arr) {
+        int n = arr.size();
+        int count = 0;
+        for(int i = 1 ; i < n-1 ; i++){
+            int lmax = arr[i];
+            for(int j = 0 ; j < i ; j++){
+                lmax = max(arr[j], lmax);
+            }
+            int rmax = arr[i];
+            for(int j = i+1 ; j < n ; j++){
+                rmax = max(rmax, arr[j]);
+            }
+            count += (min(lmax,rmax) - arr[i]);
+        }
+        return count;
+    }
+};
+
+
+
+
+
+// Method 2 Improved TC = O(3N)    SC = (2N)
+class Solution {
+public:
+    int trap(vector<int>& arr) {
+        int n = arr.size();
+        vector<int> left(n,-1);
+        vector<int> right(n,-1);
+        left[0] = arr[0];
+        // prefix array
+        for(int i = 1 ; i < n ; i++){
+            left[i] = max(left[i-1], arr[i]);
+        }
+        // suffix array
+        right[n-1] = arr[n-1];
+        for(int i = n-2 ; i >= 0 ; i--){
+            right[i] = max(right[i+1], arr[i]);
+        }
+        int ans = 0;
+        for(int i = 0 ; i < n ; i++){
+            ans += min(left[i] , right[i]) - arr[i];
+        }
+        return ans;
+    }
+};
+
+
+
+
+// Method - 3 Optimal 
+class Solution {
+public:
+    int trap(vector<int>& arr) {
+        int n = arr.size();
+        int l = 0, r = n - 1;
+        int leftMax = 0 , rightMax = 0;
+        int res = 0;
+        while(l <= r){
+            if(arr[l] <= arr[r]){
+                if(arr[l] >= leftMax) leftMax = arr[l];
+                else res += leftMax - arr[l];
+                l++;
+            }
+            else{
+                if(arr[r] >= rightMax) rightMax = arr[r];
+                else res += rightMax - arr[r];
+                r--;
+            }
+        }
+        return res;
+    }
+};
