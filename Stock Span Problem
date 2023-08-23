@@ -1,0 +1,37 @@
+// Method - 1 Brute
+class Solution{
+public:
+    // Method - 1 Brute Force
+    vector <int> calculateSpan(int price[], int n){
+       vector<int> ans(n);
+       for(int i = 0 ;  i < n ; i++){
+           int days = 0;
+           for(int j = i ; j >= 0 ; j--){
+                if(price[i] >= price[j]){
+                    days++;
+                }
+                else break;
+           }
+           ans[i] = days;
+       }
+       return ans;
+    }
+};
+
+
+
+// Method - 2 Using stack 
+class StockSpanner {
+public:    
+    // Method - 2 Using stack 
+    stack<pair<int,int> > st;  // create pair of {price , span}
+    int next(int price) {
+        int days = 1;    // in starting span of all prices will be 1,which is itself
+        while(!st.empty() && st.top().first <= price){
+            days += st.top().second;
+            st.pop();
+        }
+        st.push({price,days}); 
+        return days;
+    }
+};
