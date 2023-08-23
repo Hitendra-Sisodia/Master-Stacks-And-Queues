@@ -1,0 +1,126 @@
+// Method - 1 Brute Force TC: O(N^2)  SC: O(N)
+class Solution {
+public:
+    // Method - 1 Brute Force TC: O(N^2)  SC: O(N)
+    int findCelebrity(vector<vector<int> >& arr, int n) {
+        // finding the celebrity row with all 0s
+        int inDegree[n] = {0};   // in[i] how many person knows ith person
+        int outDegree[n] = {0};   // out[i] how many person knows by ith person
+        for(int i = 0 ; i < n ; i++){
+            for(int j = 0 ; j < n ; j++) {
+                if(arr[i][j] == 1) {   // it means ith person jth person ko janta h
+                    inDegree[j]++;
+                    outDegree[i]++;
+                }
+            }
+        }
+        for(int i = 0 ; i < n ; i++){
+            // in[i] is me kitne person dwara jana jata hu (n-1 is for diagonal)
+            if(inDegree[i] == n-1 && outDegree[i] == 0) return i;
+        }
+        return -1;
+        
+    }
+    int celebrity(vector<vector<int> >& M, int n) {
+        return findCelebrity(M,n);
+    }
+};
+
+
+
+
+
+
+
+// Method - 2 Optimal Using two poniter approach TC: O(N) SC: O(1)
+class Solution {
+    public:
+    // Method - 2 Optimal Using two poniter approach TC: O(N) SC: O(1)
+    int findcelebrity(vector<vector<int> >& arr, int n) {
+        int i = 0, j = n-1;
+        while(i < j){
+            if(arr[i][j] == 1) i++; // that means i knows j and i kabhi celeb nai ho saktha
+            else j--;   // that means i don't know j and i celeb ho skatha h decrement j pointer
+        }
+        // at the end of the day we have an required candidates  for celeb
+        for(int k = 0 ; k < n ; k++) {
+            if((k != i) && (arr[i][k] == 1 || arr[k][i] == 0)) return -1;
+        }
+        return i;
+    }
+    int celebrity(vector<vector<int> >& M, int n) {
+        return findcelebrity(M,n);
+    }
+};
+
+
+
+
+
+
+// Method - 3 Optimal Using single poniter approach TC: O(N) SC: O(1)
+class Solution {
+    public:
+    // Method - 3 Optimal Using single poniter approach TC: O(N) SC: O(1)
+    int findcelebrity(vector<vector<int> >& arr, int n) {
+        int c = 0;
+        for(int i = 0 ; i < n ; i++){
+            if(arr[c][i] == 1){
+                c = i;
+            }
+        }
+        // at the end of the loop we have a candidate for celeb
+        for(int i = 0 ; i < n ; i++){
+            if((c != i) && ((arr[c][i] == 1) || arr[i][c] == 0)) return -1;
+        }
+        return c;
+    }
+    int celebrity(vector<vector<int> >& M, int n) {
+        return findcelebrity(M,n);
+    }
+};
+
+
+
+
+
+
+
+ // Method - 4 Optimal Using stack approach TC: O(N) SC: O(N)
+class Solution {
+    public:
+    // Method - 4 Optimal Using stack approach TC: O(N) SC: O(N)
+    int findcelebrity(vector<vector<int> >& arr, int n) {
+        stack<int> st;
+        for(int i = 0 ; i< n ; i++){
+            st.push(i);
+        }
+        while(st.size() > 1) {
+            int ele1 = st.top();
+            st.pop();
+            
+            int ele2 = st.top();
+            st.pop();
+            
+            if (arr[ele1][ele2]) {
+                // If ele1 knows ele2, then ele1 can't be a celebrity
+                st.push(ele2);
+            } 
+            else {
+                // If ele1 doesn't know ele2, then ele2 can't be a celebrity
+                st.push(ele1);
+            }
+        }
+        // No potential celebrity found
+        if(st.empty()) return -1;
+        // at the end of the day single candidate in stack is potential candidate so verify it
+        int ans = st.top();
+        for(int i = 0 ; i < n ; i++){
+            if((i != ans) && (arr[ans][i] == 1 || arr[i][ans] == 0)) return -1;
+        }
+        return ans;
+    }
+    int celebrity(vector<vector<int> >& M, int n) {
+        return findcelebrity(M,n);
+    }
+};
