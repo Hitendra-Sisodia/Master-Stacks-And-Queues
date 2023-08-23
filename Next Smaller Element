@@ -1,0 +1,89 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+// previous smaller element
+
+int main(){
+    vector<int> arr = {4, 5, 2, 10, 8};
+    vector<int> nge(arr.size() , -1);
+    for(int i = arr.size() - 1 ; i >= 0 ; i--){
+        for(int j = i-1 ; j >= 0 ; j--){
+            if(arr[i] > arr[j]){
+                nge[i] = arr[j];
+                break;
+            }
+        }
+    }
+    for(int i = 0 ; i < arr.size() ; i++){
+        cout<<arr[i]<<" "<<nge[i]<<endl;
+    }
+}
+
+
+
+#include<bits/stdc++.h>
+using namespace std;
+
+// next smaller element
+
+int main(){
+    vector<int> arr = {4, 5, 2, 10, 8};
+    vector<int> nge(arr.size() , -1);
+    for(int i = 0 ; i < arr.size() ; i++){
+        for(int j = i+1 ; j < arr.size() ; j++){
+            if(arr[i] > arr[j]){
+                nge[i] = arr[j];
+                break;
+            }
+        }
+    }
+    for(int i = 0 ; i < arr.size() ; i++){
+        cout<<arr[i]<<" "<<nge[i]<<endl;
+    }
+}
+
+
+
+
+
+
+// previous smaller element method - 2
+class Solution {
+public:
+    vector<int> findNextGreaterElements(vector<int> arr){
+        stack<int> st;
+        vector<int> pse(arr.size() , -1);
+        for(int i = 0 ; i < arr.size() ; i++){
+            while(!st.empty() && st.top() >= arr[i]){
+                st.pop();
+            }
+            pse[i] = st.empty() ? -1 : st.top();
+            st.push(arr[i]);
+        } 
+        return pse;
+    }
+    vector<int> nextGreaterElements(vector<int>& nums) {
+        return findNextGreaterElements(nums);
+    }
+};
+
+
+// next smaller element method - 2
+class Solution {
+public:
+    vector<int> findNextGreaterElements(vector<int> arr){
+        stack<int> st;
+        vector<int> pse(arr.size() , -1);
+        for(int i = arr.size() - 1 ; i >= 0 ; i--){
+            while(!st.empty() && st.top() >= arr[i]){
+                st.pop();
+            }
+            pse[i] = st.empty() ? -1 : st.top();
+            st.push(arr[i]);
+        } 
+        return pse;
+    }
+    vector<int> nextGreaterElements(vector<int>& nums) {
+        return findNextGreaterElements(nums);
+    }
+};
