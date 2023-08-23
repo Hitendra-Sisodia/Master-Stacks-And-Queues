@@ -1,0 +1,33 @@
+// Method - 1 Optimal Using Stack
+class Solution {
+public:
+    // Method - 1 Optimal Using Stack
+    int minSwaps(string str) {
+        if(str.size() % 2 == 1) return -1;
+        int a = 0;  // stores the count of opening braces
+        int b = 0;  // stores the count of closing braces
+        stack<int> st;
+        for(int i = 0 ; i < str.size() ; i++) {
+            if(str[i] == '['){
+                st.push(str[i]);
+            }
+            else{
+                // incoming element is closing braces
+                if(!st.empty() && st.top() == '['){
+                    st.pop();
+                }
+                else{
+                    st.push(str[i]);
+                }
+            }
+        }
+        while(!st.empty()){
+            if(st.top() == '[') a++;
+            if(st.top() == ']') b++;
+            st.pop();
+        }
+        int ans = ((a+1)/2 + (b+1)/2);
+        // as we have to count pairs ie. why ans/2
+        return ans/2;
+    }
+};
