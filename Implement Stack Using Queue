@@ -1,0 +1,39 @@
+// Method - 1 Making push operation costly
+void QueueStack :: push(int x){
+    q2.push(x);
+    while(!q1.empty()){
+        q2.push(q1.front());
+        q1.pop();
+    }
+    q1.swap(q2);
+}
+
+//Function to pop an element from stack using two queues. 
+int QueueStack :: pop() {
+    if(q1.empty()) return -1;
+    int popped = q1.front();
+    q1.pop();
+    return popped;
+}
+
+
+
+
+
+// Method - 2 Making pop operation costly
+void QueueStack :: push(int x){
+    // Method - 2 Making pop operation costly
+    q1.push(x);
+}
+
+int QueueStack :: pop() {
+    if(q1.empty()) return -1;
+    while(q1.size() != 1){
+        q2.push(q1.front());
+        q1.pop();
+    }
+    int popped = q1.front();
+    q1.pop();
+    q1.swap(q2);
+    return popped;
+}
