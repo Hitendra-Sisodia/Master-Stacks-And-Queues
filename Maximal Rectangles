@@ -1,0 +1,58 @@
+// Method - 1 Optimal
+class Solution {
+public:
+    // Method - 1 Optimal
+    vector<int> nextSmallerElementLeft(vector<int> arr) {
+        int n = arr.size();
+        stack<int> st;
+        vector<int> left(n);
+        for(int i = 0 ; i < n ; i++){
+            while(!st.empty() && arr[st.top()] >= arr[i]){
+                st.pop();
+            }
+            left[i] = st.empty() ? -1 : st.top();
+            st.push(i);
+        }
+        return left;
+    }
+    vector<int> nextSmallerElementRight(vector<int> arr) {
+        int n = arr.size();
+        stack<int> st;
+        vector<int> right(n);
+        for(int i = n - 1 ; i >= 0 ; i--){
+            while(!st.empty() && arr[st.top()] >= arr[i]){
+                st.pop();
+            }
+            right[i] = st.empty() ? n : st.top();
+            st.push(i);
+        }
+        return right;
+    }
+    int maximalAreaHistogram(vector<int> &arr){
+        vector<int> left = nextSmallerElementLeft(arr);
+        vector<int> right = nextSmallerElementRight(arr);
+
+        int maxi = -1;
+        for(int i = 0 ; i < arr.size() ; i++){
+            maxi = max(maxi , (right[i] - left[i] - 1) * arr[i]);
+        }
+        return maxi;
+    }
+    int findMaximalSquare(vector<vector<char> > &matrix) {
+        int rows = matrix.size();
+        int cols = matrix[0].size();
+        
+        int maxArea = INT_MIN;
+        vector<int> v(cols, 0);
+        for(int i = 0 ; i < rows ; i++){
+            for(int j = 0 ; j < cols ; j++){
+                v[j] = matrix[i][j] == '1' ? v[j] += 1 : 0; 
+            }
+            maxArea = max(maxArea, maximalAreaHistogram(v));
+        }
+        return maxArea;
+    }
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        return findMaximalSquare(matrix);
+    }
+};
