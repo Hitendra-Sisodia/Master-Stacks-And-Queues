@@ -1,0 +1,128 @@
+struct Node {
+public:
+    int key,value, count;
+    Node *next;
+    Node *prev;
+    Node(int _key, int _value) {                  // Node to structure  {key, value, count}
+        key = _key;
+        value = _value;
+        count = 1;          // ~ to freq
+    }
+};
+
+struct List {
+    int size;
+    Node *head;
+    Node *tail;
+    List() {
+        head = new Node(0,0);              // head -> <- tail
+        tail = new Node(0,0);
+        head -> next = tail;
+        tail -> prev = head;
+        size = 0;
+    }
+    void addFront(Node *target) {
+        target -> next = head -> next;
+        target -> prev = head;
+        head -> next -> prev = target;
+        head -> next = target;
+        size++;
+    }
+    void removeNode(Node *target) {
+        target -> next -> prev = target -> prev;
+        target -> prev -> next = target -> next;
+        size--;
+    }
+};
+
+class LFUCache {
+    map<int, Node*> keyNode;
+    map<int, List*> freqListMap;
+    int maxCacheSize;
+    int minFreq;
+    int currentSize;      // current size of cache
+public:
+    LFUCache(int capacity) {
+        maxCacheSize = capacity;
+        minFreq = 0;
+        currentSize = 0;
+    }
+    void updateFreqListMap(Node *node) {
+        // 1. delete tha mapping from keynode map as mapping with new node address is going to be insert
+        keyNode.erase(node -> key);
+        // 2. how to access freq key from node  node catains {key, value, freq} extract freq from node
+        // itself and search in freqMap to get access of series of doubly nexted list
+        // freqMap[node -> count]  ---> access to doubly nexted list values in row {1st ddl <-> 2nd ddl
+        // remove node from ddl that passed through argument as this node have updated frequency <-> 3rd ddl}
+        freqListMap[node -> count] -> removeNode(node);
+        if(node -> count == minFreq && freqListMap[node -> count] -> size == 0) {
+            minFreq++;
+        }
+        // increment the count/freq of node
+        node -> count += 1;
+        List* newListForUpdatedFreq = new List();
+        // check if there already exist list with updated count/freq then copy in above variable
+        if(freqListMap.find(node -> count) != freqListMap.end() ){
+            newListForUpdatedFreq = freqListMap[node -> count];
+        }
+        // now append the same node at starting of newListForUpdatedFreq
+        newListForUpdatedFreq -> addFront(node);
+        // update mapping 2
+        freqListMap[node -> count] = newListForUpdatedFreq;
+        // update mapping 1
+        keyNode[node -> key] = node;
+    }
+    int get(int key) {
+        if(keyNode.find(key) != keyNode.end()){
+            // extract node form given key
+            Node *node = keyNode[key];
+            int ans = node -> value;
+            updateFreqListMap(node);
+            return ans;
+        }
+        return -1;
+    }
+    void put(int key, int value) {
+        if(maxCacheSize <= 0) return ;
+        // agar key exist karthi to uski value ko update karna ha or first m lana h
+        if(keyNode.find(key) != keyNode.end()) {
+            Node *node = keyNode[key];
+            node -> value = value;
+            updateFreqListMap(node);
+        }
+        // agar incoming key exist nai karthi
+        else{
+            // check if cahce is full ---> remove element with least freq
+            // if there is tie element with least freq then remove tail -> prev element
+            if(currentSize == maxCacheSize) {
+                // find List with leastFreq
+                List *list = freqListMap[minFreq];
+                // now update mapping 1
+                keyNode.erase(list -> tail -> prev -> key);
+                // update mapping 2
+                freqListMap[minFreq] -> removeNode(list -> tail -> prev);
+                currentSize--;
+            }
+            // now push incoming key
+            // set minFreq to 1 ---> for incoming element
+            minFreq = 1;
+            // create newList for incoming key,value,count
+            List *newListForIncomingElement = new List();
+            // check if minFreq already exist
+            if(freqListMap.find(minFreq) != freqListMap.end() ){
+                // if exist update above newly crated list with existing list
+                newListForIncomingElement = freqListMap[minFreq];
+            }
+            // now create new Node
+            Node *newNode = new Node(key,value);
+            // append newNode starting of created list
+            newListForIncomingElement -> addFront(newNode);
+            // update mapping 1
+            keyNode[key] = newNode;
+            // update mapping 2
+            freqListMap[minFreq] = newListForIncomingElement;
+            // increment size used for cache
+            currentSize++;
+        }
+    }
+};
